@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "SnapStudio – Interactive Web Photobooth",
+  title: "Snapcapture – Interactive Web Photobooth",
   description: "Ambil foto dari browser, pilih filter, desain photo strip, dan simpan ke gallery pribadimu.",
 };
 

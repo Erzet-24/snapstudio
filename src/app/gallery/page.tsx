@@ -71,7 +71,7 @@ export default function GalleryPage() {
 
   async function handleDownload(item: PhotoSessionRow) {
     try {
-      const safe = item.title.replace(/[^\w\-]+/g, "_").slice(0, 40) || "snapstudio";
+      const safe = item.title.replace(/[^\w\-]+/g, "_").slice(0, 40) || "snapcapture";
       await downloadFromUrl(item.image_url, `${safe}.png`);
     } catch (e) {
       toast(e instanceof Error ? e.message : "Gagal mengunduh", "error");

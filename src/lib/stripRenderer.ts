@@ -20,7 +20,7 @@ export const DEFAULT_CONFIG: StripConfig = {
   borderWidth: 0,
   borderColor: "#FFFFFF",
   radius: 10,
-  text: "SnapStudio",
+  text: "Snapcapture",
   font: "Poppins",
   textColor: "#4A2F75",
   textSize: 40,
@@ -229,7 +229,7 @@ export function renderStrip(canvas: HTMLCanvasElement, cfg: StripConfig, images:
     const stepY = 120;
     for (let y = -H; y < H; y += stepY) {
       for (let x = -W; x < W; x += stepX) {
-        ctx.fillText("SNAPSTUDIO PREVIEW", x, y);
+        ctx.fillText("SNAPCAPTURE PREVIEW", x, y);
       }
     }
     ctx.restore();

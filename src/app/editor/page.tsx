@@ -72,7 +72,7 @@ export default function EditorPage() {
     try {
       const blob = await exportStripBlob(viewCfg, shots, { watermark: withWatermark });
       const suffix = withWatermark ? "preview" : "clean";
-      downloadBlob(blob, `snapstudio-${suffix}-${Date.now()}.png`);
+      downloadBlob(blob, `snapcapture-${suffix}-${Date.now()}.png`);
       toast(withWatermark ? "Photo strip (watermark) diunduh" : "Photo strip HD diunduh", "success");
     } catch (e) {
       toast(e instanceof Error ? e.message : "Gagal mengunduh", "error");

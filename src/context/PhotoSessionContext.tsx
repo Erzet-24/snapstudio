@@ -10,7 +10,7 @@ interface Value {
   reset: () => void;
 }
 
-const KEY = "snapstudio.session";
+const KEY = "snapcapture.session";
 const Ctx = createContext<Value | null>(null);
 
 export function PhotoSessionProvider({ children }: { children: ReactNode }) {

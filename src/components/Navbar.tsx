@@ -40,7 +40,7 @@ export default function Navbar() {
           <span className="grid h-9 w-9 place-items-center rounded-full bg-blush-deep text-white">
             <Aperture className="h-5 w-5" />
           </span>
-          SnapStudio
+          Snapcapture
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">

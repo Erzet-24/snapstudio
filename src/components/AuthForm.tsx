@@ -68,7 +68,7 @@ export default function AuthForm({ mode, next }: Props) {
 
   return (
     <form onSubmit={submit} className="mx-auto w-full max-w-md rounded-[2rem] bg-white p-7 shadow-paper ring-1 ring-lilac/70 sm:p-9">
-      <h1 className="text-3xl font-extrabold tracking-tight text-plum">{isLogin ? "Masuk ke SnapStudio" : "Buat akun SnapStudio"}</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight text-plum">{isLogin ? "Masuk ke Snapcapture" : "Buat akun Snapcapture"}</h1>
       <p className="mt-1.5 text-sm text-plum-soft">
         {isLogin ? "Lihat strip yang pernah kamu simpan." : "Simpan strip favoritmu di gallery pribadi."}
       </p>
