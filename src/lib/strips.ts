@@ -51,6 +51,21 @@ export async function downloadFromUrl(url: string, filename: string) {
   downloadBlob(await res.blob(), filename);
 }
 
+export async function sendStripEmail(opts: { email: string; title: string; blob: Blob; filename?: string }) {
+  const to = opts.email.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+    throw new Error("Masukkan alamat email yang valid.");
+  }
+  const form = new FormData();
+  form.append("email", to);
+  form.append("title", opts.title.trim() || "Snapcapture Photo Strip");
+  form.append("file", opts.blob, opts.filename ?? `snapcapture-${Date.now()}.png`);
+
+  const res = await fetch("/api/send-email", { method: "POST", body: form });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || "Gagal mengirim ke Gmail");
+}
+
 export function downloadBlob(blob: Blob, filename: string) {
   const href = URL.createObjectURL(blob);
   const a = document.createElement("a");

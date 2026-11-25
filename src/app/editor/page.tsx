@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/context/ToastContext";
 import { usePhotoSession } from "@/context/PhotoSessionContext";
 import { DEFAULT_CONFIG, exportStripBlob } from "@/lib/stripRenderer";
-import { downloadBlob, saveStrip } from "@/lib/strips";
+import { downloadBlob, saveStrip, sendStripEmail } from "@/lib/strips";
 import type { StripConfig } from "@/lib/types";
 import PhotoStripCanvas from "@/components/PhotoStripCanvas";
 import PhotoStripEditor from "@/components/PhotoStripEditor";
@@ -107,23 +107,16 @@ export default function EditorPage() {
   }
 
   async function sendEmail() {
-    const to = email.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
-      toast("Masukkan alamat email yang valid.", "error");
-      return;
-    }
     setBusy("email");
     try {
       const blob = await exportStripBlob(viewCfg, shots, { watermark: !unlocked });
-      const form = new FormData();
-      form.append("email", to);
-      form.append("title", title.trim() || "Snapcapture Photo Strip");
-      form.append("file", blob, `snapcapture-${unlocked ? "clean" : "preview"}-${Date.now()}.png`);
-
-      const res = await fetch("/api/send-email", { method: "POST", body: form });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || "Gagal mengirim ke Gmail");
-      toast(`Foto dikirim ke ${to}!`, "success");
+      await sendStripEmail({
+        email,
+        title,
+        blob,
+        filename: `snapcapture-${unlocked ? "clean" : "preview"}-${Date.now()}.png`,
+      });
+      toast(`Foto dikirim ke ${email.trim()}!`, "success");
     } catch (e) {
       toast(e instanceof Error ? e.message : "Gagal mengirim email", "error");
     } finally {

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Camera, Images, Loader2, Search, X } from "lucide-react";
 import { getSupabase } from "@/lib/supabase/client";
-import { deleteStrip, downloadFromUrl } from "@/lib/strips";
+import { deleteStrip, downloadFromUrl, sendStripEmail } from "@/lib/strips";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/context/ToastContext";
 import type { PhotoSessionRow } from "@/lib/types";
@@ -78,6 +78,23 @@ export default function GalleryPage() {
     }
   }
 
+  async function handleSendEmail(item: PhotoSessionRow, email: string) {
+    try {
+      const res = await fetch(item.image_url);
+      if (!res.ok) throw new Error("Gagal mengambil gambar dari gallery");
+      const safe = item.title.replace(/[^\w\-]+/g, "_").slice(0, 40) || "snapcapture";
+      await sendStripEmail({
+        email,
+        title: item.title,
+        blob: await res.blob(),
+        filename: `${safe}.png`,
+      });
+      toast(`Foto dikirim ke ${email.trim()}!`, "success");
+    } catch (e) {
+      toast(e instanceof Error ? e.message : "Gagal mengirim email", "error");
+    }
+  }
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -149,7 +166,16 @@ export default function GalleryPage() {
         )}
       </div>
 
-      {open && <PhotoModal item={open} onClose={() => setOpen(null)} onDownload={handleDownload} onDelete={handleDelete} />}
+      {open && (
+        <PhotoModal
+          item={open}
+          defaultEmail={user?.email ?? ""}
+          onClose={() => setOpen(null)}
+          onDownload={handleDownload}
+          onDelete={handleDelete}
+          onSendEmail={handleSendEmail}
+        />
+      )}
     </div>
   );
 }

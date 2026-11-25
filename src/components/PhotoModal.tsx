@@ -1,18 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Download, Loader2, Trash2, X } from "lucide-react";
+import { Download, Loader2, Mail, Trash2, X } from "lucide-react";
 import type { PhotoSessionRow } from "@/lib/types";
 
 interface Props {
   item: PhotoSessionRow;
+  defaultEmail?: string;
   onClose: () => void;
   onDownload: (item: PhotoSessionRow) => Promise<void>;
   onDelete: (item: PhotoSessionRow) => Promise<void>;
+  onSendEmail: (item: PhotoSessionRow, email: string) => Promise<void>;
 }
 
-export default function PhotoModal({ item, onClose, onDownload, onDelete }: Props) {
-  const [busy, setBusy] = useState<"dl" | "del" | null>(null);
+export default function PhotoModal({ item, defaultEmail = "", onClose, onDownload, onDelete, onSendEmail }: Props) {
+  const [busy, setBusy] = useState<"dl" | "del" | "email" | null>(null);
   const [confirm, setConfirm] = useState(false);
+  const [email, setEmail] = useState(defaultEmail);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -25,10 +28,12 @@ export default function PhotoModal({ item, onClose, onDownload, onDelete }: Prop
     };
   }, [onClose]);
 
-  async function run(kind: "dl" | "del") {
+  async function run(kind: "dl" | "del" | "email") {
     setBusy(kind);
     try {
-      await (kind === "dl" ? onDownload(item) : onDelete(item));
+      if (kind === "dl") await onDownload(item);
+      else if (kind === "del") await onDelete(item);
+      else await onSendEmail(item, email);
     } finally {
       setBusy(null);
       setConfirm(false);
@@ -57,6 +62,20 @@ export default function PhotoModal({ item, onClose, onDownload, onDelete }: Prop
             </dl>
           </div>
           <div className="space-y-2">
+            <div className="space-y-1.5 border-b border-lilac/60 pb-3">
+              <span className="block text-xs font-semibold text-plum">Kirim ke Gmail</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="nama@gmail.com"
+                className="input py-2 text-xs"
+                aria-label="Alamat Gmail tujuan"
+              />
+              <button onClick={() => run("email")} disabled={busy !== null || !email.trim()} className="btn btn-pink w-full">
+                {busy === "email" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />} Kirim ke Gmail
+              </button>
+            </div>
             <button onClick={() => run("dl")} disabled={busy !== null} className="btn btn-primary w-full">
               {busy === "dl" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />} Download
             </button>
