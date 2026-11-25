@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Check, Download, Loader2, Pencil, QrCode, RotateCcw, Save, ShieldCheck, Sparkles, X } from "lucide-react";
+import { ArrowRight, Check, Download, Loader2, Mail, Pencil, QrCode, RotateCcw, Save, ShieldCheck, Sparkles, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/context/ToastContext";
 import { usePhotoSession } from "@/context/PhotoSessionContext";
@@ -24,10 +24,15 @@ export default function EditorPage() {
   const [title, setTitle] = useState(
     () => `Strip ${new Date().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}`,
   );
-  const [busy, setBusy] = useState<"save" | "dl" | null>(null);
+  const [busy, setBusy] = useState<"save" | "dl" | "email" | null>(null);
   const [savedId, setSavedId] = useState<string | null>(null);
   const [unlocked, setUnlocked] = useState(false);
   const [showPayModal, setShowPayModal] = useState(false);
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    if (user?.email) setEmail((prev) => prev || user.email!);
+  }, [user?.email]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -96,6 +101,31 @@ export default function EditorPage() {
     } catch (e) {
       const msg = (e as { message?: string })?.message;
       toast(msg ? `Gagal menyimpan: ${msg}` : "Gagal menyimpan", "error");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function sendEmail() {
+    const to = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
+      toast("Masukkan alamat email yang valid.", "error");
+      return;
+    }
+    setBusy("email");
+    try {
+      const blob = await exportStripBlob(viewCfg, shots, { watermark: !unlocked });
+      const form = new FormData();
+      form.append("email", to);
+      form.append("title", title.trim() || "Snapcapture Photo Strip");
+      form.append("file", blob, `snapcapture-${unlocked ? "clean" : "preview"}-${Date.now()}.png`);
+
+      const res = await fetch("/api/send-email", { method: "POST", body: form });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Gagal mengirim ke Gmail");
+      toast(`Foto dikirim ke ${to}!`, "success");
+    } catch (e) {
+      toast(e instanceof Error ? e.message : "Gagal mengirim email", "error");
     } finally {
       setBusy(null);
     }
@@ -224,6 +254,24 @@ export default function EditorPage() {
               <button onClick={retake} className="btn btn-ghost">
                 <RotateCcw className="h-4 w-4" /> Retake Photos
               </button>
+            </div>
+
+            <div className="border-t border-lilac/60 pt-4">
+              <span className="mb-1.5 block text-xs font-semibold text-plum">Kirim ke Gmail</span>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="nama@gmail.com"
+                  className="input flex-1 py-2.5"
+                  aria-label="Alamat Gmail tujuan"
+                />
+                <button onClick={sendEmail} disabled={busy !== null || !email.trim()} className="btn btn-primary shrink-0 px-4">
+                  {busy === "email" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
+                  Kirim
+                </button>
+              </div>
             </div>
             {!user && <p className="text-xs text-plum-soft">Kamu belum login. Menyimpan ke Gallery akan meminta login terlebih dulu.</p>}
             {savedId && (
