@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen flex-col">
         <Providers>
           <Navbar />
-          <main className="flex-1">{children}</main>
+          <main className="min-w-0 flex-1 overflow-x-clip">{children}</main>
           <Footer />
         </Providers>
         {process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY && (

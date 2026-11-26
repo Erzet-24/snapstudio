@@ -116,12 +116,12 @@ export default function PhotoboothPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-      <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Photobooth Studio</h1>
-      <p className="mt-1.5 text-plum-soft">Pilih filter, tentukan jumlah foto, lalu tekan Start Session.</p>
+    <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-12">
+      <h1 className="text-2xl font-extrabold tracking-tight sm:text-4xl">Photobooth Studio</h1>
+      <p className="mt-1 text-sm text-plum-soft sm:mt-1.5 sm:text-base">Pilih filter, tentukan jumlah foto, lalu tekan Start Session.</p>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_16rem]">
-        <div className="space-y-5">
+      <div className="mt-5 grid gap-6 sm:mt-8 lg:grid-cols-[1fr_16rem] lg:gap-8">
+        <div className="min-w-0 space-y-4 sm:space-y-5">
           <CameraPreview
             videoRef={videoRef}
             status={status}
@@ -148,7 +148,7 @@ export default function PhotoboothPage() {
             }}
           />
         </div>
-        <aside>
+        <aside className="min-w-0">
           <h2 className="mb-3 text-sm font-bold text-plum">Hasil foto ({taken}/{shots})</h2>
           <PhotoPreview slots={slots} activeIndex={active} busy={running} onRetake={retake} />
         </aside>

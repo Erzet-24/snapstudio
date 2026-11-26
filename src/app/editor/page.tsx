@@ -156,9 +156,9 @@ export default function EditorPage() {
       </p>
 
       {mode === "edit" ? (
-        <div className="mt-8 grid items-start gap-8 lg:grid-cols-[1fr_26rem]">
-          <div className="lg:sticky lg:top-24">{canvas}</div>
-          <div className="space-y-4">
+        <div className="mt-6 grid items-start gap-6 sm:mt-8 lg:grid-cols-[1fr_26rem] lg:gap-8">
+          <div className="min-w-0 lg:sticky lg:top-24">{canvas}</div>
+          <div className="min-w-0 space-y-4">
             <PhotoStripEditor
               cfg={viewCfg}
               photoCount={shots.length}
@@ -185,9 +185,9 @@ export default function EditorPage() {
           </div>
         </div>
       ) : (
-        <div className="mt-8 grid items-start gap-8 md:grid-cols-[1fr_22rem]">
-          <div>{canvas}</div>
-          <div className="space-y-5 rounded-[2rem] bg-white/70 p-6 shadow-soft ring-1 ring-lilac/70">
+        <div className="mt-6 grid items-start gap-6 sm:mt-8 md:grid-cols-[1fr_22rem] md:gap-8">
+          <div className="min-w-0">{canvas}</div>
+          <div className="min-w-0 space-y-5 rounded-[2rem] bg-white/70 p-5 shadow-soft ring-1 ring-lilac/70 sm:p-6">
             <div
               className={`flex items-center gap-2 rounded-2xl p-3 text-xs font-medium ${
                 unlocked
