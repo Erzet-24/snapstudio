@@ -44,13 +44,13 @@ export default function PhotoModal({ item, defaultEmail = "", onClose, onDownloa
 
   return (
     <div role="dialog" aria-modal="true" aria-label={item.title} className="fixed inset-0 z-[90] grid place-items-center bg-plum/50 p-4 backdrop-blur-sm" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="relative flex max-h-[94vh] w-full max-w-3xl animate-rise flex-col overflow-hidden rounded-[2rem] bg-cream shadow-paper md:flex-row">
+      <div onClick={(e) => e.stopPropagation()} className="relative flex max-h-[94vh] w-full max-w-3xl animate-rise flex-col overflow-y-auto rounded-[2rem] bg-cream shadow-paper md:flex-row md:overflow-hidden">
         <button onClick={onClose} aria-label="Tutup" className="absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-white text-plum shadow-soft">
           <X className="h-5 w-5" />
         </button>
-        <div className="grid min-h-0 flex-1 place-items-center overflow-auto bg-lilac/30 p-5">
+        <div className="grid shrink-0 place-items-center bg-lilac/30 p-4 md:min-h-0 md:flex-1 md:shrink md:overflow-auto md:p-5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={item.image_url} alt={item.title} className="max-h-[70vh] w-auto max-w-full rounded-md shadow-paper" />
+          <img src={item.image_url} alt={item.title} className="max-h-[45vh] w-auto max-w-full rounded-md shadow-paper md:max-h-[70vh]" />
         </div>
         <div className="flex shrink-0 flex-col justify-between gap-6 p-6 md:w-64">
           <div>

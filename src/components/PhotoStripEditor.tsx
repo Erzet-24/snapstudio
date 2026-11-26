@@ -27,9 +27,9 @@ const TABS = [
 function Slider({ label, value, min, max, step = 1, unit = "", onChange }: { label: string; value: number; min: number; max: number; step?: number; unit?: string; onChange: (v: number) => void }) {
   return (
     <label className="flex items-center gap-3 text-xs font-semibold text-plum">
-      <span className="w-24 shrink-0">{label}</span>
+      <span className="w-20 shrink-0 sm:w-24">{label}</span>
       <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(+e.target.value)} className="range" />
-      <span className="w-12 text-right text-plum-soft">{unit === "%" ? Math.round(value * 100) : value}{unit}</span>
+      <span className="w-11 shrink-0 text-right text-plum-soft sm:w-12">{unit === "%" ? Math.round(value * 100) : value}{unit}</span>
     </label>
   );
 }
@@ -45,17 +45,17 @@ export default function PhotoStripEditor({ cfg, photoCount, onChange, selectedSt
 
   return (
     <div className="rounded-[2rem] bg-white/70 p-4 shadow-soft ring-1 ring-lilac/70 sm:p-5">
-      <div className="mb-4 grid grid-cols-4 gap-1 rounded-full bg-cream p-1 ring-1 ring-lilac/70" role="tablist">
+      <div className="mb-4 grid grid-cols-4 gap-1 rounded-2xl bg-cream p-1 ring-1 ring-lilac/70 sm:rounded-full" role="tablist">
         {TABS.map((t) => (
           <button
             key={t.id}
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={`flex items-center justify-center gap-1.5 rounded-full py-2 text-xs font-semibold transition sm:text-sm ${tab === t.id ? "bg-plum text-cream" : "text-plum-soft hover:text-plum"}`}
+            className={`flex flex-col items-center justify-center gap-0.5 rounded-xl py-2 text-[11px] font-semibold transition sm:flex-row sm:gap-1.5 sm:rounded-full sm:text-sm ${tab === t.id ? "bg-plum text-cream" : "text-plum-soft hover:text-plum"}`}
           >
             <t.icon className="h-4 w-4" />
-            <span className="hidden sm:inline">{t.label}</span>
+            <span>{t.label}</span>
           </button>
         ))}
       </div>

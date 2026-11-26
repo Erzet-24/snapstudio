@@ -257,7 +257,7 @@ export default function EditorPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="nama@gmail.com"
-                  className="input flex-1 py-2.5"
+                  className="input min-w-0 flex-1 py-2.5"
                   aria-label="Alamat Gmail tujuan"
                 />
                 <button onClick={sendEmail} disabled={busy !== null || !email.trim()} className="btn btn-primary shrink-0 px-4">

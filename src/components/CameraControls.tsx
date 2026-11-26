@@ -33,18 +33,18 @@ export default function CameraControls({ shots, onShotsChange, ready, running, t
         ))}
       </div>
 
-      <button onClick={onStart} disabled={!ready || running} className="btn btn-pink min-w-44">
+      <button onClick={onStart} disabled={!ready || running} className="btn btn-pink w-full sm:w-auto sm:min-w-44">
         <Camera className="h-5 w-5" />
         {running ? "Sedang memotret…" : takenCount > 0 ? "Mulai ulang session" : "Start Session"}
       </button>
 
       {takenCount > 0 && !running && (
-        <button onClick={onReset} className="btn btn-ghost">
+        <button onClick={onReset} className="btn btn-ghost w-full sm:w-auto">
           <RotateCcw className="h-4 w-4" /> Hapus semua
         </button>
       )}
 
-      <button onClick={onContinue} disabled={!complete || running} className="btn btn-primary">
+      <button onClick={onContinue} disabled={!complete || running} className="btn btn-primary w-full sm:w-auto">
         Lanjut ke editor <ArrowRight className="h-4 w-4" />
       </button>
     </div>

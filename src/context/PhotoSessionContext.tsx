@@ -38,7 +38,13 @@ export function PhotoSessionProvider({ children }: { children: ReactNode }) {
     } catch {} // kuota penuh → abaikan, state tetap di memori
   }, [photos, filterId, hydrated]);
 
-  const reset = useCallback(() => setPhotos([]), []);
+  const reset = useCallback(() => {
+    setPhotos([]);
+    setFilterId("original");
+    try {
+      sessionStorage.removeItem(KEY);
+    } catch {}
+  }, []);
 
   return <Ctx.Provider value={{ photos, setPhotos, filterId, setFilterId, hydrated, reset }}>{children}</Ctx.Provider>;
 }

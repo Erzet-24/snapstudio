@@ -10,7 +10,7 @@ interface Props {
 
 export default function PhotoPreview({ slots, activeIndex, busy, onRetake }: Props) {
   return (
-    <div className={`grid gap-3 ${slots.length === 4 ? "grid-cols-4 lg:grid-cols-1" : "grid-cols-3 lg:grid-cols-1"}`}>
+    <div className={`grid gap-3 ${slots.length === 4 ? "grid-cols-2 sm:grid-cols-4 lg:grid-cols-1" : "grid-cols-3 lg:grid-cols-1"}`}>
       {slots.map((src, i) => (
         <div
           key={i}

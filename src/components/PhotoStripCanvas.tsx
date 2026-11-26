@@ -80,11 +80,12 @@ export default function PhotoStripCanvas({ cfg, photos, selectedId, watermark, o
       onPointerMove={onMove}
       onPointerUp={() => (drag.current = null)}
       onPointerCancel={() => (drag.current = null)}
-      className="mx-auto block h-auto w-full rounded-md bg-white shadow-paper"
+      className="mx-auto block h-auto max-h-[58vh] w-auto max-w-full rounded-md bg-white shadow-paper lg:max-h-none lg:w-full"
       style={{
         maxWidth: cfg.layout === "grid2x2" ? 560 : 340,
         aspectRatio: `${size.W} / ${size.H}`,
-        touchAction: cfg.stickers.length ? "none" : "auto",
+        // Izinkan scroll vertikal halaman saat tidak sedang menggeser stiker terpilih di layar sentuh
+        touchAction: selectedId ? "none" : "pan-y",
         cursor: cfg.stickers.length ? "grab" : "default",
       }}
       aria-label="Preview photo strip"

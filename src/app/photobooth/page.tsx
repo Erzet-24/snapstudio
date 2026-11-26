@@ -16,8 +16,8 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 export default function PhotoboothPage() {
   const router = useRouter();
   const toast = useToast();
-  const { videoRef, status, start } = useCamera();
-  const { photos, setPhotos, filterId, setFilterId, hydrated } = usePhotoSession();
+  const { videoRef, status, facing, start, flip } = useCamera();
+  const { setPhotos, filterId, setFilterId, reset } = usePhotoSession();
 
   const [shots, setShots] = useState<3 | 4>(4);
   const [slots, setSlots] = useState<(string | null)[]>(Array(4).fill(null));
@@ -29,6 +29,8 @@ export default function PhotoboothPage() {
   const alive = useRef(true);
   const filterRef = useRef(filterId);
   filterRef.current = filterId;
+  const facingRef = useRef(facing);
+  facingRef.current = facing;
 
   useEffect(() => {
     alive.current = true;
@@ -42,22 +44,15 @@ export default function PhotoboothPage() {
     start();
   }, [start]);
 
-  // Pulihkan foto dari sesi sebelumnya (mis. kembali dari editor)
-  const [restored, setRestored] = useState(false);
+  // Bersihkan riwayat sesi sebelumnya setiap kali memulai photobooth lagi
   useEffect(() => {
-    if (!hydrated || restored) return;
-    if (photos.length >= 3) {
-      const n = photos.length >= 4 ? 4 : 3;
-      setShots(n);
-      setSlots(Array.from({ length: n }, (_, i) => photos[i] ?? null));
-    }
-    setRestored(true);
-  }, [hydrated, restored, photos]);
+    reset();
+  }, [reset]);
 
-  // Sinkronkan ke context hanya setelah dipulihkan
+  // Sinkronkan ke context hanya setelah ada foto baru yang diambil
   useEffect(() => {
-    if (restored) setPhotos(slots);
-  }, [slots, restored, setPhotos]);
+    if (slots.some(Boolean)) setPhotos(slots);
+  }, [slots, setPhotos]);
 
   useEffect(() => {
     if (status === "ready" && !canvasFilterSupported()) {
@@ -76,7 +71,7 @@ export default function PhotoboothPage() {
         if (!alive.current) return false;
       }
       setCountdown(null);
-      const data = captureFrame(video, getFilter(filterRef.current).css);
+      const data = captureFrame(video, getFilter(filterRef.current).css, facingRef.current === "user");
       setFlash(true);
       setTimeout(() => setFlash(false), 450);
       setSlots((prev) => prev.map((s, i) => (i === index ? data : s)));
@@ -127,7 +122,17 @@ export default function PhotoboothPage() {
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_16rem]">
         <div className="space-y-5">
-          <CameraPreview videoRef={videoRef} status={status} filterCss={getFilter(filterId).css} countdown={countdown} flash={flash} onRequest={start} />
+          <CameraPreview
+            videoRef={videoRef}
+            status={status}
+            filterCss={getFilter(filterId).css}
+            countdown={countdown}
+            flash={flash}
+            mirrored={facing === "user"}
+            disabled={running}
+            onRequest={() => start()}
+            onFlip={flip}
+          />
           <FilterSelector value={filterId} onChange={setFilterId} disabled={running} />
           <CameraControls
             shots={shots}
@@ -137,7 +142,10 @@ export default function PhotoboothPage() {
             takenCount={taken}
             onStart={startSession}
             onContinue={goEditor}
-            onReset={() => setSlots(Array(shots).fill(null))}
+            onReset={() => {
+              setSlots(Array(shots).fill(null));
+              reset();
+            }}
           />
         </div>
         <aside>
